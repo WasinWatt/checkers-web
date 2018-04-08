@@ -1,4 +1,6 @@
 from flask import Flask, render_template, abort, request, Response
+from flask_pymongo import PyMongo
+from pymongo import MongoClient
 import numpy as np
 from game import Game, GameState
 from agent import Agent
@@ -7,8 +9,15 @@ import config
 from preprocessing import index_to_move
 from agent import Agent
 import json
+import Constant
 
+client = MongoClient(Constant.MONGO_URI)
 app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
+
+app.config['MONGO_DBNAME'] = 'cuhorsezero'
+app.config['MONGO_URI'] = Constant.MONGO_URI
+
+mongo = PyMongo(app)
 
 version = 8
 checkers = Game()
@@ -56,6 +65,19 @@ def ai():
         "board": new_state.board.tolist(),
         "value": value,
         "done": done
+    }
+    js = json.dumps(data)
+    res = Response(js, status=200, mimetype="application/json")
+    return res
+
+@app.route("/save", methods = ["POST"])
+def save():
+    data = request.get_json()
+    result = data["result"]
+    records_c = mongo.db.records
+    records_c.insert({'opponent_ver': version, 'result': result})
+    data = {
+        "status": "ok"
     }
     js = json.dumps(data)
     res = Response(js, status=200, mimetype="application/json")
