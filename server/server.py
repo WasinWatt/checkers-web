@@ -30,6 +30,31 @@ AI = Agent('best_player', checkers.action_size, config.MCTS_SIMS, config.CPUCT, 
 def index():
     return render_template("index.html")
 
+@app.route("/step", methods = ["POST"])
+def step():
+    data = request.get_json()
+    state = np.array(data["state"])
+    action = data["action"]
+    game_state = GameState(state, 1, 0)
+    action = ((action[0][0], action[0][1]), (action[1][0], action[1][1]))
+    if action not in game_state.get_legal_moves():
+        data = {
+            "error": "Internal server error"
+        }
+        js = json.dumps(data)
+        res = Response(js, status=500, mimetype="application/json")
+        return res
+
+    next_state, value, done = game_state.takeAction(action)
+    data = {
+        "board": next_state.board.tolist(),
+        "value": value,
+        "done": done
+    }
+    js = json.dumps(data)
+    res = Response(js, status=200, mimetype="application/json")
+    return res
+
 @app.route("/moves", methods = ["POST"])
 def moves():
     data = request.get_json()
@@ -60,9 +85,9 @@ def ai():
 
     action, _, _, _ = AI.act(game_state, 0)
     action = index_to_move(action)
-    new_state, value, done = game_state.takeAction(action)
+    next_state, value, done = game_state.takeAction(action)
     data = {
-        "board": new_state.board.tolist(),
+        "board": next_state.board.tolist(),
         "value": value,
         "done": done
     }
