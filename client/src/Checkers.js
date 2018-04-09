@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Row from './Row';
+import api from './api';
 
 class Checkers extends Component {
   constructor(props) {
@@ -22,7 +23,8 @@ class Checkers extends Component {
         [1, 0, 1, 0, 1, 0, 1, 0]
       ],
       isLoading: false,
-      selectedPiece: null
+      selectedPiece: null,
+      highlightedTiles: null
     };
   }
 
@@ -31,21 +33,46 @@ class Checkers extends Component {
     this.setState({ selectedPiece: [row, col] }, () => {
       console.log(`Select piece: ${this.state.selectedPiece}`);
     });
+    let highlightedTiles = [];
+    this.state.legalMoves.forEach(move => {
+      if (move[0].toString() === [row, col].toString()) {
+        highlightedTiles.push(move[1]);
+      }
+    });
+    this.setState({ highlightedTiles }, () => {
+      console.log('Set highlightedTiles:', highlightedTiles);
+    });
   }
 
   onSelectTile(row, col) {
     if (this.state.selectedPiece) {
-      this.setState({ selectedPiece: null }, () => {
-        console.log('Reset selected piece');
-        console.log(`Select tile: ${[row, col]}`)
-      });
+      this.setState({
+        selectedPiece: null,
+        highlightedTiles: null
+      })
     }
+  }
+
+  async componentDidMount() {
+    const json = await api.getMoves({ state: this.state.board });
+    this.setState({ legalMoves: json.moves });
+    console.log(json);
   }
 
   render() {
     return (
       <div>
-        {this.state.board.map((boardRow, row) => <Row row={row}  boardRow={boardRow} onSelectTile={this.onSelectTile} onSelectPiece={this.onSelectPiece} />)}
+        {
+          this.state.board.map((boardRow, row) => {
+            return <Row
+            row={row}
+            boardRow={boardRow}
+            highlightedTiles={this.state.highlightedTiles}
+            onSelectTile={this.onSelectTile}
+            onSelectPiece={this.onSelectPiece}
+            />;
+          })
+        }
       </div>
     );
   }
