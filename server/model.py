@@ -28,7 +28,7 @@ class Gen_Model():
 		self.model.save(run_folder + 'models/version' + "{0:0>4}".format(version) + '.h5')
 
 	def read(self, version):
-		return load_model( run_folder + "/models/version" + "{0:0>4}".format(version) + '.h5')
+		return load_model( run_folder + "models/version" + "{0:0>4}".format(version) + '.h5')
 
 class Residual_CNN(Gen_Model):
 	def __init__(self, reg_const, learning_rate, input_dim,  output_dim, hidden_layers):

@@ -19,10 +19,24 @@ const callApi = async (endpoint, request) => {
 
 const api = {};
 
-api.getMoves = board => (
+api.getMoves = body => (
   callApi('/moves', {
     method: 'POST',
-    body: board
+    body
+  })
+);
+
+api.makeMove = body => (
+  callApi('/step', {
+    method: 'POST',
+    body
+  })
+);
+
+api.moveAI = body => (
+  callApi('/ai', {
+    method: 'POST',
+    body
   })
 );
 

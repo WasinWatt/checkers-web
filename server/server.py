@@ -12,7 +12,7 @@ import json
 import Constant
 
 client = MongoClient(Constant.MONGO_URI)
-app = Flask(__name__, static_folder="../static/dist", template_folder="../static")
+app = Flask(__name__, static_folder="../client/build/static", template_folder="../client/build")
 
 app.config['MONGO_DBNAME'] = 'cuhorsezero'
 app.config['MONGO_URI'] = Constant.MONGO_URI

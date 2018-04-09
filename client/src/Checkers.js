@@ -24,39 +24,70 @@ class Checkers extends Component {
       ],
       isLoading: false,
       selectedPiece: null,
-      highlightedTiles: null
+      highlightedTiles: null,
+      isPlayerTurn: true
     };
   }
 
   onSelectPiece(e, row, col) {
     e.stopPropagation();
-    this.setState({ selectedPiece: [row, col] }, () => {
-      console.log(`Select piece: ${this.state.selectedPiece}`);
-    });
-    let highlightedTiles = [];
-    this.state.legalMoves.forEach(move => {
-      if (move[0].toString() === [row, col].toString()) {
-        highlightedTiles.push(move[1]);
-      }
-    });
-    this.setState({ highlightedTiles }, () => {
-      console.log('Set highlightedTiles:', highlightedTiles);
-    });
+    if (this.state.isPlayerTurn) {
+      let highlightedTiles = [];
+      this.state.legalMoves.forEach(move => {
+        if (move[0].toString() === [row, col].toString()) {
+          highlightedTiles.push(move[1]);
+        }
+      });
+      this.setState({
+        selectedPiece: [row, col],
+        highlightedTiles
+      });
+    }
   }
 
-  onSelectTile(row, col) {
-    if (this.state.selectedPiece) {
+  async onSelectTile(row, col) {
+    if (this.state.isPlayerTurn && this.state.selectedPiece) {
+      const isLegalMove = this.state.highlightedTiles.some((tile) => {
+        return tile.toString() === [row, col].toString();
+      });
+      if (isLegalMove) {
+        const json = await api.makeMove({
+          state: this.state.board,
+          action: [this.state.selectedPiece, [row, col]]
+        });
+        this.setState({
+          board: json.board,
+          isPlayerTurn: false
+        }, () => {
+          this.moveAI();
+        });
+      }
       this.setState({
         selectedPiece: null,
         highlightedTiles: null
-      })
+      });
+    }
+  }
+
+  async getMoves() {
+    const json = await api.getMoves({ state: this.state.board });
+    this.setState({ legalMoves: json.moves });
+  }
+
+  async moveAI() {
+    if (!this.state.isPlayerTurn) {
+      const json = await api.moveAI({ state: this.state.board });
+      this.setState({
+        board: json.board,
+        isPlayerTurn: true
+      }, () => {
+        this.getMoves();
+      });
     }
   }
 
   async componentDidMount() {
-    const json = await api.getMoves({ state: this.state.board });
-    this.setState({ legalMoves: json.moves });
-    console.log(json);
+    this.getMoves();
   }
 
   render() {
