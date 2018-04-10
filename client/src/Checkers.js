@@ -8,6 +8,7 @@ class Checkers extends Component {
     this.state = this.getInitialState();
     this.onSelectTile = this.onSelectTile.bind(this);
     this.onSelectPiece = this.onSelectPiece.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   getInitialState() {
@@ -27,6 +28,14 @@ class Checkers extends Component {
       highlightedTiles: null,
       isPlayerTurn: true
     };
+  }
+
+  reset() {
+    this.setState(this.getInitialState(), this.getMoves);
+  }
+
+  getIsLoading() {
+    return this.state.isLoading;
   }
 
   onSelectPiece(e, row, col) {
@@ -57,10 +66,9 @@ class Checkers extends Component {
         });
         this.setState({
           board: json.board,
-          isPlayerTurn: false
-        }, () => {
-          this.moveAI();
-        });
+          isPlayerTurn: false,
+          isLoading: true
+        }, this.moveAI);
       }
       this.setState({
         selectedPiece: null,
@@ -79,10 +87,9 @@ class Checkers extends Component {
       const json = await api.moveAI({ state: this.state.board });
       this.setState({
         board: json.board,
-        isPlayerTurn: true
-      }, () => {
-        this.getMoves();
-      });
+        isPlayerTurn: true,
+        isLoading: false
+      }, this.getMoves);
     }
   }
 
@@ -92,18 +99,23 @@ class Checkers extends Component {
 
   render() {
     return (
-      <div>
-        {
-          this.state.board.map((boardRow, row) => {
-            return <Row
-            row={row}
-            boardRow={boardRow}
-            highlightedTiles={this.state.highlightedTiles}
-            onSelectTile={this.onSelectTile}
-            onSelectPiece={this.onSelectPiece}
-            />;
-          })
-        }
+      <div className="center">
+        <div className="checkers">
+          {
+            this.state.board.map((boardRow, row) => {
+              return (
+                <Row
+                row={row}
+                boardRow={boardRow}
+                highlightedTiles={this.state.highlightedTiles}
+                onSelectTile={this.onSelectTile}
+                onSelectPiece={this.onSelectPiece}
+                />
+              );
+            })
+          }
+        </div>
+        <input className={`button ${this.state.isLoading ? 'button-disabled' : ''}`} type="button" value="Reset" disabled={this.state.isLoading ? true : false} onClick={this.reset} />
       </div>
     );
   }
