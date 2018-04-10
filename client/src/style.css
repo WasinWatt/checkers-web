@@ -56,13 +56,30 @@
 .left {
   text-align: center;
   float: left;
-  width: 60%;
+  width: 58%;
 }
 
 .right {
-  left: 20%;
   float: right;
-  width: 40%;
+  width: 42%;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .left {
+      width: 100%;
+    }
+    .right {
+      text-align: center;
+      width: 100%;
+    }
+
+    .navbar h1{
+      font-size: 1.2em;
+    }
+    .navbar img {
+      display: none;
+    }
 }
 
 .button {
