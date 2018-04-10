@@ -1,10 +1,13 @@
 import React from 'react';
 import Checkers from './Checkers';
+import Navbar from './Navbar';
 
 const App = () => (
-  <div className="center">
-    <h1>AlphaCUhorse</h1>
-    <Checkers />
+  <div>
+    <Navbar/>
+    <div>  
+      <Checkers />
+    </div>
   </div>
 );
 

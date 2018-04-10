@@ -93,29 +93,38 @@ class Checkers extends Component {
     }
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.getMoves();
   }
 
   render() {
     return (
-      <div className="center">
-        <div className="checkers">
-          {
-            this.state.board.map((boardRow, row) => {
-              return (
-                <Row
-                row={row}
-                boardRow={boardRow}
-                highlightedTiles={this.state.highlightedTiles}
-                onSelectTile={this.onSelectTile}
-                onSelectPiece={this.onSelectPiece}
-                />
-              );
-            })
-          }
+      <div>
+        <div className="left">
+          <div className="center">
+            {
+              this.state.board.map((boardRow, row) => {
+                return (
+                  <Row
+                  row={row}
+                  boardRow={boardRow}
+                  highlightedTiles={this.state.highlightedTiles}
+                  onSelectTile={this.onSelectTile}
+                  onSelectPiece={this.onSelectPiece}
+                  />
+                );
+              })
+            }
+          </div>
+          <input className={`button ${this.state.isLoading ? 'button-disabled' : ''}`} type="button" value="Reset" disabled={this.state.isLoading ? true : false} onClick={this.reset} />
         </div>
-        <input className={`button ${this.state.isLoading ? 'button-disabled' : ''}`} type="button" value="Reset" disabled={this.state.isLoading ? true : false} onClick={this.reset} />
+        <div className="right">
+          <h2>You're playing against :</h2>
+          <h2>[ model number: 8 ]</h2>
+          <div style={{paddingTop: "10%"}}>
+            {this.state.isPlayerTurn ? <h1>Your Turn!</h1> : <h1>Opponent's Turn</h1>}
+          </div>
+        </div>
       </div>
     );
   }

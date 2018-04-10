@@ -2,3 +2,4 @@ static/node_modules
 server/run
 server/Constant.py
 *.pyc
+*/node_modules
