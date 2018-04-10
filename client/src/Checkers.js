@@ -119,10 +119,10 @@ class Checkers extends Component {
           <input className={`button ${this.state.isLoading ? 'button-disabled' : ''}`} type="button" value="Reset" disabled={this.state.isLoading ? true : false} onClick={this.reset} />
         </div>
         <div className="right">
-          <h2>You're playing against :</h2>
-          <h2>[ model number: 8 ]</h2>
+          <h3>You're playing against :</h3>
+          <h3>[ model number: 28 ]</h3>
           <div style={{paddingTop: "10%"}}>
-            {this.state.isPlayerTurn ? <h1>Your Turn!</h1> : <h1>Opponent's Turn</h1>}
+            {this.state.isPlayerTurn ? <h1>Your Turn !</h1> : <h1>Opponent's Turn !</h1>}
           </div>
         </div>
       </div>
