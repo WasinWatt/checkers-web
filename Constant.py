@@ -1,1 +1,0 @@
-MONGO_URI = 'mongodb://admin:notesource@ds237979.mlab.com:37979/cuhorsezero'
