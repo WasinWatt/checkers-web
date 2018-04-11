@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+import loggers as lg
 from preprocessing import move_to_index
 from copy import deepcopy
 
@@ -126,18 +127,16 @@ class GameState():
 
     # Reset the game
 	def reset_board(self):
-		board = np.zeros((8, 8), dtype=np.int)
-		for i in range(8):
-			if i % 2 != 0:
-				board[0][i] = self.PLAYER_2
-				board[6][i] = self.PLAYER_1
-				# for j in range(1, 8, 2):
-				#     self.board[j][i] = 5
-			else:
-				board[1][i] = self.PLAYER_2
-				board[7][i] = self.PLAYER_1
-				# for j in range(0, 8, 2):
-				#     self.board[j][i] = 5
+		board = np.array([
+			[0, -1, 0, -1, 0, -1, 0, -1],
+			[-1, 0, -1, 0, -1, 0, -1, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 1, 0, 1, 0, 1, 0, 1],
+			[1, 0, 1, 0, 1, 0, 1, 0]
+		])
 		return board
 
     
@@ -246,7 +245,7 @@ class GameState():
 
 	# Get single jumps from a piece position
 	# Return single jumps with jumped piece in a tuple of tuple ((jump_row, jump_col), [(eaten_row, eaten_col)])
-	def get_single_jumps(self, position, selected_piece, eaten):
+	def get_single_jumps(self, position, first_selected_piece, selected_piece, eaten):
 		row, col = position
 		possible_jumps = []
 		# King
@@ -254,35 +253,43 @@ class GameState():
 		if selected_piece == self.PLAYER_1_KING or selected_piece == self.PLAYER_2_KING:
 			for i in range(7):
 				nw_jumped = (row - i - 1, col - i - 1)
-				if self.is_in_board_range(nw_jumped) and self.is_occupied(nw_jumped):
+				if self.is_in_board_range(nw_jumped) and self.is_occupied(nw_jumped) and nw_jumped != first_selected_piece:
 					if self.is_opponent(nw_jumped):
 						nw_jump = (row - i - 2, col - i - 2)
 						if self.is_in_board_range(nw_jump) and not self.is_occupied(nw_jump) and not nw_jumped in eaten:
 							possible_jumps.append((nw_jump, [nw_jumped]))
+						if nw_jumped in eaten:
+							continue
 					break
 			for i in range(7):
 				ne_jumped = (row - i - 1, col + i + 1)
-				if self.is_in_board_range(ne_jumped) and self.is_occupied(ne_jumped):
+				if self.is_in_board_range(ne_jumped) and self.is_occupied(ne_jumped) and ne_jumped != first_selected_piece:
 					if self.is_opponent(ne_jumped):
 						ne_jump = (row - i - 2, col + i + 2)
 						if self.is_in_board_range(ne_jump) and not self.is_occupied(ne_jump) and not ne_jumped in eaten:
 							possible_jumps.append((ne_jump, [ne_jumped]))
+						if ne_jumped in eaten:
+							continue
 					break
 			for i in range(7):
 				sw_jumped = (row + i + 1, col - i - 1)
-				if self.is_in_board_range(sw_jumped) and self.is_occupied(sw_jumped):
+				if self.is_in_board_range(sw_jumped) and self.is_occupied(sw_jumped) and sw_jumped != first_selected_piece:
 					if self.is_opponent(sw_jumped):
 						sw_jump = (row + i + 2, col - i - 2)
 						if self.is_in_board_range(sw_jump) and not self.is_occupied(sw_jump) and not sw_jumped in eaten:
 							possible_jumps.append((sw_jump, [sw_jumped]))
+						if sw_jumped in eaten:
+							continue
 					break
 			for i in range(7):
 				se_jumped = (row + i + 1, col + i + 1)
-				if self.is_in_board_range(se_jumped) and self.is_occupied(se_jumped):
+				if self.is_in_board_range(se_jumped) and self.is_occupied(se_jumped) and se_jumped != first_selected_piece:
 					if self.is_opponent(se_jumped):
 						se_jump = (row + i + 2, col + i + 2)
 						if self.is_in_board_range(se_jump) and not self.is_occupied(se_jump) and not se_jumped in eaten:
 							possible_jumps.append((se_jump, [se_jumped]))
+						if se_jumped in eaten:
+							continue
 					break
 		# Not king
 		else:
@@ -311,15 +318,17 @@ class GameState():
 		return possible_jumps
 
 
-	def get_possible_jumps(self, position, selected_piece='', eaten=[]):
+	def get_possible_jumps(self, position, first_selected_piece='', selected_piece='', eaten=[]):
 		if selected_piece == '':
 			selected_piece = self.board[position]
+		if first_selected_piece == '':
+			first_selected_piece = position
 		result = []
-		possible_jumps = self.get_single_jumps(position, selected_piece, eaten)
+		possible_jumps = self.get_single_jumps(position, first_selected_piece, selected_piece, eaten)
 		for jump in possible_jumps:
-			if self.get_possible_jumps(jump[0], selected_piece, eaten + jump[1]) == []:
+			if self.get_possible_jumps(jump[0], first_selected_piece, selected_piece, eaten + jump[1]) == []:
 				result += [(jump[0], eaten + jump[1])]
-			result += self.get_possible_jumps(jump[0], selected_piece, eaten + jump[1])
+			result += self.get_possible_jumps(jump[0], first_selected_piece, selected_piece, eaten + jump[1])
 		return result
 
 
