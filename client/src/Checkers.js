@@ -26,7 +26,9 @@ class Checkers extends Component {
       isLoading: false,
       selectedPiece: null,
       highlightedTiles: null,
-      isPlayerTurn: true
+      isPlayerTurn: true,
+      isGameEnd: false,
+      winner: 0
     };
   }
 
@@ -88,7 +90,9 @@ class Checkers extends Component {
       this.setState({
         board: json.board,
         isPlayerTurn: true,
-        isLoading: false
+        isLoading: false,
+        isGameEnd: (json.done == 1) ? true : false,
+        winner: json.value
       }, this.getMoves);
     }
   }
@@ -122,7 +126,8 @@ class Checkers extends Component {
           <h3>You're playing against :</h3>
           <h3>[ model number: 28 ]</h3>
           <div style={{paddingTop: "10%"}}>
-            {this.state.isPlayerTurn ? <h1>Your Turn !</h1> : <h1>Opponent's Turn !</h1>}
+            {this.state.isGameEnd ? <h2>Game Ended !</h2> : this.state.isPlayerTurn ? <h2>Your Turn !</h2> : <h2>Opponent's Turn !</h2>}
+            {this.state.isGameEnd ? (this.state.winner == 1 ? <h2>You wins</h2> : this.state.winner == -1 ? <h2>You loses</h2> : <h2>DRAW</h2>) : null}
           </div>
         </div>
       </div>

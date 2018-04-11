@@ -90,6 +90,9 @@ def ai():
         action, _, _, _ = AI.act(game_state, 0)
         action = index_to_move(action)
         next_state, value, done = game_state.takeAction(action)
+        if done == 1:
+            records_c = mongo.db.records
+            records_c.insert({'opponent_ver': version, 'result': value})
         data = {
             "board": next_state.board.tolist(),
             "value": value,
