@@ -79,7 +79,7 @@ def ai():
         game_state = GameState(state, -1, 0)
         if len(game_state.get_legal_moves()) == 0:
             data = {
-                "board": state,
+                "board": data["state"],
                 "value": 1,
                 "done": 1
             }
