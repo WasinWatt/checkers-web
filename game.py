@@ -1,6 +1,5 @@
 import numpy as np
 import logging
-import loggers as lg
 from preprocessing import move_to_index
 from copy import deepcopy
 

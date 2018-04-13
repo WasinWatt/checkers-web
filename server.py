@@ -20,7 +20,7 @@ app.config['MONGO_URI'] = Constant.MONGO_URI
 
 mongo = PyMongo(app)
 
-version = 33
+version = 38
 checkers = Game()
 best_NN = Residual_CNN(config.REG_CONST, config.LEARNING_RATE, checkers.input_shape, checkers.action_size, config.HIDDEN_CNN_LAYERS)
 m_tmp = best_NN.read(version)
