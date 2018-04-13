@@ -40,4 +40,11 @@ api.moveAI = body => (
   })
 );
 
+api.save = body => (
+  callApi('/save', {
+    method: 'POST',
+    body
+  })
+)
+
 export default api;
