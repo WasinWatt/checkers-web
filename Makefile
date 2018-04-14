@@ -2,4 +2,4 @@ dev:
 	cd client; \
 	npm run build; \
 	cd ..; \
-	python3 server.py;
+	gunicorn server:app --threads=12;

@@ -1,4 +1,4 @@
-entrypoint: gunicorn server:app
+entrypoint: gunicorn server:app --threads=12
 env: flex
 runtime: python
 runtime_config:

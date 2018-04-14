@@ -83,6 +83,8 @@ def ai():
                 "value": 1,
                 "done": 1
             }
+            records_c = mongo.db.records
+            records_c.insert({'opponent_ver': version, 'result': 1})
             js = json.dumps(data)
             res = Response(js, status=200, mimetype="application/json")
             return res
