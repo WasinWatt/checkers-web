@@ -128,12 +128,12 @@ class Checkers extends Component {
               })
             }
           </div>
-          <input className={`button ${this.state.isLoading ? 'button-disabled' : ''}`} type="button" value="Reset" disabled={this.state.isLoading ? true : false} onClick={this.reset} />
+          <input className={`button ${this.state.isGameEnd ? '' : 'button-disabled'}`} type="button" value="Reset" disabled={this.state.isGameEnd ? false : true} onClick={this.reset} />
           <input className={`button ${this.state.isLoading ? 'button-disabled' : ''}`} type="button" value="Surrender" disabled={this.state.isLoading ? true : false} onClick={this.surrender} />
         </div>
         <div className="right">
           <h3>You're playing against :</h3>
-          <h3>[ model number: 38 ]</h3>
+          <h3>[ model number: 51 ]</h3>
           <div style={{paddingTop: "10%"}}>
             {this.state.isGameEnd ? <h2>Game Ended !</h2> : this.state.isPlayerTurn ? <h2>Your Turn !</h2> : <h2>Opponent's Turn !</h2>}
             {this.state.isGameEnd ? (this.state.winner == 1 ? <h2>You wins</h2> : this.state.winner == -1 ? <h2>You loses</h2> : <h2>DRAW</h2>) : null}
