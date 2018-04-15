@@ -7,7 +7,7 @@
 }
 
 .white-square {
-  background-color: grey;
+  background-color: rgb(143, 142, 142);
 }
 
 .red-square {
@@ -36,13 +36,13 @@
 }
 
 .black-piece {
-  background-color: rgb(177, 41, 0);
-  border-block-end: 0.4vmin solid aqua;
+  background-color: rgb(206, 48, 0);
+  border-block-end: 0.4vmin solid aquamarine;
 }
 
 .white-piece {
-  background-color: rgb(40, 227, 252);
-  border-block-end: 0.4vmin solid rgb(177, 41, 0);
+  background-color: aquamarine;
+  border-block-end: 0.4vmin solid rgb(206, 48, 0);
 }
 
 .king {
