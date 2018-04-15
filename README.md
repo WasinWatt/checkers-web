@@ -14,11 +14,7 @@ pip install -r requirements.txt
 ## Usage
 Make sure you use Python3
 ```
-python3 server.py
-```
-or
-```
-python server.py
+make dev
 ```
 
 
